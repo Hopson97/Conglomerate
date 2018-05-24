@@ -1,16 +1,8 @@
 #include <iostream>
-#include <algorithm>
 #include <vector>
-#include <unordered_set>
-#include <regex>
-#include <fstream>
-#include <cstdlib>
-#include "Filesystem.h"
 
-bool startsWith(const std::string& string, const std::string& prefix) 
-{
-    return !std::strncmp(string.c_str(), prefix.c_str(), prefix.length());
-}
+#include "Filesystem.h"
+#include "SourceFile.h"
 
 void findSourceFiles(const fs::path& directory, std::vector<fs::path>& sources)
 {
@@ -25,31 +17,15 @@ void findSourceFiles(const fs::path& directory, std::vector<fs::path>& sources)
     }
 }
 
-void findHeaderFiles(fs::path& file, std::unordered_set<std::string>& headers)
-{
-    std::cout << "\nLooking for header files in " << file << "\n";
-    std::ifstream inFile(file);
-    std::string line;
-    while (std::getline(inFile, line)) {
-        if (startsWith(line, "#include")) {
-            line.erase(0, 9); //remove the #include 
-            line.erase(line.length() - 1, line.length() - 1);
-            std::cout << line << "\n";
-        }
-    }
-    
-}
-
 int main(int argc, char** argv)
 {
-    std::vector<fs::path> sources;
-    std::unordered_set<std::string> headers;
+    std::vector<fs::path> sourcePaths;
+    std::vector<SourceFile> sourceFiles;
 
-    findSourceFiles(fs::current_path(), sources);
-
-    std::cout << "Number of source files found: " << sources.size() << "\n";
-    std::cout << "Finding header files...\n";
-    for (auto& sourceFile : sources) {
-        findHeaderFiles(sourceFile, headers);
+    std::cout << "Searching for source files...\n";
+    findSourceFiles(fs::current_path(), sourcePaths);
+    std::cout << "Number of source files found: " << sourcePaths.size() << "\n";
+    for (auto& path : sourcePaths) {
+        sourceFiles.emplace_back(path);
     }
 }
