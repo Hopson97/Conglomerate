@@ -5,25 +5,20 @@
 #include "SourceFile.h"
 #include "Util.h"
 
-
-
 /*
-    Locates all the source and header files in the root directory, and any child directories using .c and .cpp wildcard
+    Gets all the source and header files in the root directory, and any child directories using .c and .cpp wildcard
 */
 void findFiles(const fs::path& directory, 
     std::vector<fs::path>& sourcePaths, 
     std::vector<fs::path>& headerPaths)
 {
-    for (auto& entry : fs::directory_iterator(directory)) {
+    for (auto& entry : fs::recursive_directory_iterator(directory)) {
         const auto& path = entry.path();
         if (path.extension() == ".cpp" || path.extension() == ".c") {
             sourcePaths.emplace_back(path);
         }
         else if (path.extension() == ".h" || path.extension() == ".hpp") {
             headerPaths.emplace_back(path);
-        }
-        else if (fs::is_directory(path)) {
-            findFiles(path, sourcePaths, headerPaths);
         }
     }
 }
@@ -37,6 +32,11 @@ int main(int argc, char** argv)
     findFiles(fs::current_path(), sourcePaths, headerPaths);
     std::cout << "Number of C++ source files found: " << sourcePaths.size() << "\n";
     std::cout << "Number of C++ header files found: " << headerPaths.size() << "\n";
+
+
+    for (auto& header : headerPaths) {
+        
+    }
 
     /*
     for (auto& path : filePaths) {
