@@ -4,7 +4,8 @@
 #include <fstream>
 #include <iterator>
 
-SourceFile::SourceFile(const fs::path & fileLocation)
+SourceFile::SourceFile(const fs::path & fileLocation)  
+    : m_rootDirectory   (fileLocation.parent_path())
 {
     std::ifstream inFile(fileLocation);
     std::string line;
@@ -13,9 +14,9 @@ SourceFile::SourceFile(const fs::path & fileLocation)
     }
 }
 
-std::vector<std::string> SourceFile::getHeaderFiles()
+std::vector<fs::path> SourceFile::getHeaderFiles()
 {
-    std::vector<std::string> headerFiles;
+    std::vector<fs::path> headerFiles;
 
     for (auto& line : m_lines) {
         if (line.find("#include") != std::string::npos) {
@@ -27,7 +28,7 @@ std::vector<std::string> SourceFile::getHeaderFiles()
                     name.push_back(c);
                     c = line[++loc];
                 }
-                headerFiles.push_back(name);
+                headerFiles.push_back(m_rootDirectory / name);
             }
         }
     }

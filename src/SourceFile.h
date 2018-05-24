@@ -11,8 +11,9 @@ class SourceFile
     public:
         SourceFile(const fs::path& fileLocation);
 
-        std::vector<std::string> getHeaderFiles();
+        std::vector<fs::path> getHeaderFiles();
 
     private:
         std::vector<std::string> m_lines;
+        const fs::path m_rootDirectory;
 };

@@ -5,18 +5,25 @@
 #include "SourceFile.h"
 #include "Util.h"
 
+
+
 /*
-    Locates all the source files in the root directory, and any child directories using .c and .cpp wildcard
+    Locates all the source and header files in the root directory, and any child directories using .c and .cpp wildcard
 */
-void findSourceFiles(const fs::path& directory, std::vector<fs::path>& sources)
+void findFiles(const fs::path& directory, 
+    std::vector<fs::path>& sourcePaths, 
+    std::vector<fs::path>& headerPaths)
 {
     for (auto& entry : fs::directory_iterator(directory)) {
         const auto& path = entry.path();
         if (path.extension() == ".cpp" || path.extension() == ".c") {
-            sources.push_back(path);
+            sourcePaths.emplace_back(path);
+        }
+        else if (path.extension() == ".h" || path.extension() == ".hpp") {
+            headerPaths.emplace_back(path);
         }
         else if (fs::is_directory(path)) {
-            findSourceFiles(path, sources);
+            findFiles(path, sourcePaths, headerPaths);
         }
     }
 }
@@ -24,14 +31,15 @@ void findSourceFiles(const fs::path& directory, std::vector<fs::path>& sources)
 int main(int argc, char** argv)
 {
     std::vector<fs::path> sourcePaths;
-    std::vector<SourceFile> sourceFiles;
+    std::vector<fs::path> headerPaths;
 
-    std::cout << "Searching for source files...\n";
-    findSourceFiles(fs::current_path(), sourcePaths);
-    std::cout << "Number of source files found: " << sourcePaths.size() << "\n";
+    std::cout << "Searching for C++ files...\n";
+    findFiles(fs::current_path(), sourcePaths, headerPaths);
+    std::cout << "Number of C++ source files found: " << sourcePaths.size() << "\n";
+    std::cout << "Number of C++ header files found: " << headerPaths.size() << "\n";
 
-
-    for (auto& path : sourcePaths) {
+    /*
+    for (auto& path : filePaths) {
         sourceFiles.emplace_back(path);
     }
 
@@ -39,11 +47,12 @@ int main(int argc, char** argv)
     for (auto& sourceFile : sourceFiles) {
         auto headers = sourceFile.getHeaderFiles();
         for (auto& header : headers) {
-            headerFileNames.emplace(header);
+            headerFileNames.emplace(header.string());
+            std::cout << fs::exists(header) << " " << header << std::endl;
         }
     }
 
     std::cout << "Found " << headerFileNames.size() << " header files\n";
-
     std::cout << "Loaded source files\n";
+    */
 }
