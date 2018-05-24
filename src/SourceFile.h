@@ -11,6 +11,7 @@ class SourceFile
     public:
         SourceFile(const fs::path& fileLocation);
 
+        std::vector<std::string> getHeaderFiles();
 
     private:
         std::vector<std::string> m_lines;
