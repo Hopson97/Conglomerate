@@ -15,7 +15,7 @@ Header::Header(const fs::path & path)
 
 void Header::createDependaciesList(const std::unordered_map<std::string, unsigned>& idLookup)
 {
-    m_fileContents.reserve(fs::file_size(m_fullPath));
+    m_fileContents.reserve((unsigned)fs::file_size(m_fullPath));
     std::ifstream inFile(m_fullPath);
     std::string line;
     while (std::getline(inFile, line)) {
