@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
-#include <iomanip>
+#include <fstream>
 #include "Filesystem.h"
 #include "Header.h"
 #include "Util.h"
@@ -28,6 +28,7 @@ void findFiles(const fs::path& directory,
 
 int main(int argc, char** argv)
 {
+    std::string finalFile;
     auto t = timeFunction([&]() {
         std::vector<fs::path> sourcePaths;
         std::vector<fs::path> headerPaths;
@@ -51,6 +52,34 @@ int main(int argc, char** argv)
         }
 
         sortHeaders(headerFiles);
+
+        for (auto& header : headerFiles) {
+            finalFile.append(header.getFileContent());
+        }
+
+        for (auto& sourceFile : sourcePaths) {
+            std::ifstream inFile(sourceFile);
+            std::string line;
+            while (std::getline(inFile, line)) {
+                if (!lineContainsInclude(line)) {
+                    finalFile.append(line + '\n');
+                }
+            }
+        }
+
     });
+
+    const auto folder       = fs::current_path() / "glom_output";
+    const auto outputFile   = folder / "out.cpp";
+   
+    if (!fs::exists(folder))
+        fs::create_directory(folder);
+
+    if (fs::exists(outputFile)) {
+        fs::remove(outputFile);
+    }
+
+    std::ofstream outFile(fs::current_path() / "glom_output" / "out.cpp");
+    outFile << finalFile;
     std::cout << t << "ms" << std::endl;
 }

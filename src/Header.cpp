@@ -25,7 +25,9 @@ void Header::createDependaciesList(const std::unordered_map<std::string, unsigne
             m_dependancies.push_back(idLookup.at(name));
         }
         else {
-            m_fileContents.append(line);
+            if (!lineContainsPragmaOnce(line)) {
+                m_fileContents.append(line + '\n');
+            }
         }
     }
 }

@@ -17,6 +17,8 @@ class Header
 
         const std::vector<unsigned>& getDependancies() const { return m_dependancies; }
 
+        std::string&& getFileContent() { return std::move(m_fileContents);  }
+
     private:
         std::string m_fileContents;
         std::vector<unsigned> m_dependancies;

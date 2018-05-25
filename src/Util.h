@@ -13,4 +13,6 @@ auto timeFunction(F f)
     return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
 }
 
+bool lineContainsInclude    (const std::string& line);
+bool lineContainsPragmaOnce (const std::string& line);
 std::string tryExtractHeaderNameFromInclude(const std::string& line);
