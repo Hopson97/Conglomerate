@@ -42,9 +42,8 @@ int main(int argc, char** argv)
         std::vector<Header> headerFiles;
         std::unordered_map<std::string, unsigned> headerIDs;
         for (auto& headerPath : headerPaths) {
-            headerFiles.emplace_back(headerPath);
-            auto& header = headerFiles.back();
-            headerIDs.emplace(std::make_pair(header.getFileName().string(), header.getID()));
+            auto& header = headerFiles.emplace_back(headerPath);
+            headerIDs.emplace(header.getFileName().string(), header.getID());
         }
 
         for (auto& header : headerFiles) {
@@ -77,7 +76,7 @@ int main(int argc, char** argv)
             fs::remove(outputFile);
         }
 
-        std::ofstream outFile(fs::current_path() / "glom_output" / "out.cpp");
+        std::ofstream outFile(outputFile);
         outFile << finalFile;
     });
 

@@ -51,9 +51,5 @@ void sortHeaders(std::vector<Header>& headers)
             return a.getDependancies().size() < b.getDependancies().size();
     });
 
-    while (true) {
-        if (isSorted(headers)) {
-            break;
-        }
-    }
+    while (!isSorted(headers));
 }
