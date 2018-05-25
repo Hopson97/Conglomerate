@@ -1,9 +1,11 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <iomanip>
 #include "Filesystem.h"
 #include "Header.h"
 #include "Util.h"
+#include "HeaderSorter.h"
 
 
 /*
@@ -45,25 +47,10 @@ int main(int argc, char** argv)
         }
 
         for (auto& header : headerFiles) {
-            header.getDependancies(headerIDs);
+            header.createDependaciesList(headerIDs);
         }
+
+        sortHeaders(headerFiles);
     });
     std::cout << t << "ms" << std::endl;
-    /*
-    for (auto& path : filePaths) {
-        sourceFiles.emplace_back(path);
-    }
-
-    std::unordered_set<std::string> headerFileNames;
-    for (auto& sourceFile : sourceFiles) {
-        auto headers = sourceFile.getHeaderFiles();
-        for (auto& header : headers) {
-            headerFileNames.emplace(header.string());
-            std::cout << fs::exists(header) << " " << header << std::endl;
-        }
-    }
-
-    std::cout << "Found " << headerFileNames.size() << " header files\n";
-    std::cout << "Loaded source files\n";
-    */
 }

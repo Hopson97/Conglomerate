@@ -121,6 +121,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Header.cpp" />
+    <ClCompile Include="src\HeaderSorter.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\SourceFile.cpp" />
     <ClCompile Include="src\Util.cpp" />
@@ -131,6 +132,7 @@
   <ItemGroup>
     <ClInclude Include="src\Filesystem.h" />
     <ClInclude Include="src\Header.h" />
+    <ClInclude Include="src\HeaderSorter.h" />
     <ClInclude Include="src\SourceFile.h" />
     <ClInclude Include="src\Util.h" />
   </ItemGroup>

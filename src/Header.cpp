@@ -13,8 +13,9 @@ Header::Header(const fs::path & path)
     ,   m_id        (id++)
 { }
 
-void Header::getDependancies(const std::unordered_map<std::string, unsigned>& idLookup)
+void Header::createDependaciesList(const std::unordered_map<std::string, unsigned>& idLookup)
 {
+    m_fileContents.reserve(fs::file_size(m_fullPath));
     std::ifstream inFile(m_fullPath);
     std::string line;
     while (std::getline(inFile, line)) {
@@ -22,6 +23,9 @@ void Header::getDependancies(const std::unordered_map<std::string, unsigned>& id
         if (s != "-1") {
             auto name = fs::path(s).filename().string();
             m_dependancies.push_back(idLookup.at(name));
+        }
+        else {
+            m_fileContents.append(line);
         }
     }
 }
