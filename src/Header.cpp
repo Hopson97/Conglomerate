@@ -22,7 +22,7 @@ void Header::createDependaciesList(const std::unordered_map<std::string, unsigne
         auto s = tryExtractHeaderNameFromInclude(line);
         if (s != "-1") {
             auto name = fs::path(s).filename().string();
-            m_dependancies.push_back(idLookup.at(name));
+            m_dependancies.emplace(idLookup.at(name));
         }
         else {
             if (!lineContainsPragmaOnce(line)) {
