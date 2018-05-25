@@ -1,9 +1,10 @@
 #include <iostream>
 #include <vector>
-#include <unordered_set>
+#include <unordered_map>
 #include "Filesystem.h"
-#include "SourceFile.h"
+#include "Header.h"
 #include "Util.h"
+
 
 /*
     Gets all the source and header files in the root directory, and any child directories using .c and .cpp wildcard
@@ -25,19 +26,29 @@ void findFiles(const fs::path& directory,
 
 int main(int argc, char** argv)
 {
-    std::vector<fs::path> sourcePaths;
-    std::vector<fs::path> headerPaths;
+    auto t = timeFunction([&]() {
+        std::vector<fs::path> sourcePaths;
+        std::vector<fs::path> headerPaths;
 
-    std::cout << "Searching for C++ files...\n";
-    findFiles(fs::current_path(), sourcePaths, headerPaths);
-    std::cout << "Number of C++ source files found: " << sourcePaths.size() << "\n";
-    std::cout << "Number of C++ header files found: " << headerPaths.size() << "\n";
+        std::cout << "Searching for C++ files...\n";
+        findFiles(fs::current_path(), sourcePaths, headerPaths);
+        std::cout << "Number of C++ source files found: " << sourcePaths.size() << "\n";
+        std::cout << "Number of C++ header files found: " << headerPaths.size() << "\n";
 
+        std::cout << "Sorting headers by their dependancies...\n";
+        std::vector<Header> headerFiles;
+        std::unordered_map<std::string, unsigned> headerIDs;
+        for (auto& headerPath : headerPaths) {
+            headerFiles.emplace_back(headerPath);
+            auto& header = headerFiles.back();
+            headerIDs.emplace(std::make_pair(header.getFileName().string(), header.getID()));
+        }
 
-    for (auto& header : headerPaths) {
-        
-    }
-
+        for (auto& header : headerFiles) {
+            header.getDependancies(headerIDs);
+        }
+    });
+    std::cout << t << "ms" << std::endl;
     /*
     for (auto& path : filePaths) {
         sourceFiles.emplace_back(path);

@@ -120,14 +120,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Header.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\SourceFile.cpp" />
+    <ClCompile Include="src\Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Filesystem.h" />
+    <ClInclude Include="src\Header.h" />
     <ClInclude Include="src\SourceFile.h" />
     <ClInclude Include="src\Util.h" />
   </ItemGroup>
