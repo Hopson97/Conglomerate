@@ -56,12 +56,4 @@ void sortHeaders(std::vector<Header>& headers)
             break;
         }
     }
-
-    for (auto& header : headers) {
-        std::cout << std::setw(3) << header.getID() << " " << header.getDependancies().size() << " depend on ";
-        for (auto d : header.getDependancies()) {
-            std::cout << std::setw(3) << d << " ";
-        }
-        std::cout << "\n";
-    }
 }
