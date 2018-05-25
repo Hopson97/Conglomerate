@@ -8,7 +8,7 @@ A C++ compiler that supports C++17 is needed
 
 Use CMake to generate your files.
 
-# Useage
+# Usage
 
 Add the executable to your path variables.
 
