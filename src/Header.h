@@ -9,7 +9,6 @@ class Header
     public:
         Header(const fs::path& path);
 
-        const fs::path& getPath()       const { return m_fullPath; }
         const fs::path& getFileName()   const { return m_fileName; }
         unsigned        getID()         const { return m_id;       }
 

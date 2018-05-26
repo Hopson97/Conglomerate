@@ -30,4 +30,5 @@ void Header::createDependaciesList(const std::unordered_map<std::string, uint16_
             }
         }
     }
+    m_fullPath = "";
 }

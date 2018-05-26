@@ -11,7 +11,6 @@ class Header
     public:
         Header(const fs::path& path);
 
-        const fs::path& getPath()       const { return m_fullPath; }
         const fs::path& getFileName()   const { return m_fileName; }
         unsigned        getID()         const { return m_id;       }
 
@@ -81,6 +80,7 @@ void Header::createDependaciesList(const std::unordered_map<std::string, uint16_
             }
         }
     }
+    m_fullPath = "";
 }
 
 #include <iostream>
