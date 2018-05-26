@@ -43,6 +43,24 @@ std::ofstream getOutputFile()
     return outFile;
 }
 
+std::vector<Header> getSortedHeaderList(const std::vector<fs::path>& headerPaths)
+{
+    std::cout << "Sorting headers by their dependancies...\n";
+    std::vector<Header> headerFiles;
+    std::unordered_map<std::string, unsigned> headerIDs;
+    for (auto& headerPath : headerPaths) {
+        auto& header = headerFiles.emplace_back(headerPath);
+        headerIDs.emplace(header.getFileName().string(), header.getID());
+    }
+
+    for (auto& header : headerFiles) {
+        header.createDependaciesList(headerIDs);
+    }
+
+    sortHeaders(headerFiles);
+    return headerFiles;
+}
+
 int main(int argc, char** argv)
 {
     std::ofstream outFile = getOutputFile();
@@ -53,19 +71,7 @@ int main(int argc, char** argv)
         std::cout << "Number of C++ header files found: " << headerPaths.size() << '\n';
 
         std::cout << "Sorting headers by their dependancies...\n";
-        std::vector<Header> headerFiles;
-        std::unordered_map<std::string, unsigned> headerIDs;
-        for (auto& headerPath : headerPaths) {
-            auto& header = headerFiles.emplace_back(headerPath);
-            headerIDs.emplace(header.getFileName().string(), header.getID());
-        }
-
-        for (auto& header : headerFiles) {
-            header.createDependaciesList(headerIDs);
-        }
-
-        sortHeaders(headerFiles);
-        std::cout << "Outputting code...\n";
+        std::vector<Header> headerFiles = getSortedHeaderList(headerPaths);
 
         for (auto& header : headerFiles) {
             outFile << header.getFileContent();
