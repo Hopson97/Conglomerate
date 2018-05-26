@@ -5,7 +5,7 @@
 
 #include "Util.h"
 
-unsigned Header::id = 0;
+uint16_t Header::id = 0;
 
 Header::Header(const fs::path & path)
     :   m_fullPath  (path)
@@ -13,7 +13,7 @@ Header::Header(const fs::path & path)
     ,   m_id        (id++)
 { }
 
-void Header::createDependaciesList(const std::unordered_map<std::string, unsigned>& idLookup)
+void Header::createDependaciesList(const std::unordered_map<std::string, uint16_t>& idLookup)
 {
     m_fileContents.reserve((unsigned)fs::file_size(m_fullPath));
     std::ifstream inFile(m_fullPath);

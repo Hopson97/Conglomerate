@@ -60,7 +60,7 @@ std::vector<Header> getSortedHeaderList(const std::vector<fs::path>& headerPaths
 {
     std::cout << "Sorting headers by their dependancies...\n";
     std::vector<Header> headerFiles;
-    std::unordered_map<std::string, unsigned> headerIDs;
+    std::unordered_map<std::string, uint16_t> headerIDs;
     for (auto& headerPath : headerPaths) {
         auto& header = headerFiles.emplace_back(headerPath);
         headerIDs.emplace(header.getFileName().string(), header.getID());

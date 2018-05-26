@@ -13,18 +13,18 @@ class Header
         const fs::path& getFileName()   const { return m_fileName; }
         unsigned        getID()         const { return m_id;       }
 
-        void createDependaciesList(const std::unordered_map<std::string, unsigned>& idLookup);
+        void createDependaciesList(const std::unordered_map<std::string, uint16_t>& idLookup);
 
-        const std::unordered_set<unsigned>& getDependancies() const { return m_dependancies; }
+        const std::unordered_set<uint16_t>& getDependancies() const { return m_dependancies; }
 
         const std::string& getFileContent() { return m_fileContents;  }
 
     private:
         std::string m_fileContents;
-        std::unordered_set<unsigned> m_dependancies;
+        std::unordered_set<uint16_t> m_dependancies;
         fs::path m_fullPath;
         fs::path m_fileName;
-        unsigned m_id;
+        uint16_t m_id;
 
-        static unsigned id;
+        static uint16_t id;
 };

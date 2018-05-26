@@ -15,20 +15,20 @@ class Header
         const fs::path& getFileName()   const { return m_fileName; }
         unsigned        getID()         const { return m_id;       }
 
-        void createDependaciesList(const std::unordered_map<std::string, unsigned>& idLookup);
+        void createDependaciesList(const std::unordered_map<std::string, uint16_t>& idLookup);
 
-        const std::unordered_set<unsigned>& getDependancies() const { return m_dependancies; }
+        const std::unordered_set<uint16_t>& getDependancies() const { return m_dependancies; }
 
         const std::string& getFileContent() { return m_fileContents;  }
 
     private:
         std::string m_fileContents;
-        std::unordered_set<unsigned> m_dependancies;
+        std::unordered_set<uint16_t> m_dependancies;
         fs::path m_fullPath;
         fs::path m_fileName;
-        unsigned m_id;
+        uint16_t m_id;
 
-        static unsigned id;
+        static uint16_t id;
 };
 
 #include <vector>
@@ -56,7 +56,7 @@ std::optional<std::string> tryExtractHeaderNameFromInclude(const std::string& li
 #include <iostream>
 
 
-unsigned Header::id = 0;
+uint16_t Header::id = 0;
 
 Header::Header(const fs::path & path)
     :   m_fullPath  (path)
@@ -64,7 +64,7 @@ Header::Header(const fs::path & path)
     ,   m_id        (id++)
 { }
 
-void Header::createDependaciesList(const std::unordered_map<std::string, unsigned>& idLookup)
+void Header::createDependaciesList(const std::unordered_map<std::string, uint16_t>& idLookup)
 {
     m_fileContents.reserve((unsigned)fs::file_size(m_fullPath));
     std::ifstream inFile(m_fullPath);
@@ -149,13 +149,7 @@ void sortHeaders(std::vector<Header>& headers)
     }
 
     headers = sortedHeaders;
-    
-
-    return;*/
- //   std::sort(headers.begin(), headers.end(),
- //       [](const Header& a, const Header& b) {
- //           return a.getDependancies().size() < b.getDependancies().size();
-  //  });
+    */
    while (!isSorted(headers));
 }
 #include <iostream>
@@ -216,7 +210,7 @@ std::vector<Header> getSortedHeaderList(const std::vector<fs::path>& headerPaths
 {
     std::cout << "Sorting headers by their dependancies...\n";
     std::vector<Header> headerFiles;
-    std::unordered_map<std::string, unsigned> headerIDs;
+    std::unordered_map<std::string, uint16_t> headerIDs;
     for (auto& headerPath : headerPaths) {
         auto& header = headerFiles.emplace_back(headerPath);
         headerIDs.emplace(header.getFileName().string(), header.getID());
