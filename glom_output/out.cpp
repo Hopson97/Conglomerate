@@ -45,7 +45,7 @@ auto timeFunction(F f)
     f();
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = end - begin;
-    return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+    return std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
 }
 
 bool lineContainsInclude    (const std::string& line);
@@ -76,7 +76,6 @@ void Header::createDependaciesList(const std::unordered_map<std::string, unsigne
             m_dependancies.emplace(idLookup.at(name));
         }
         else {
-            std::cout << "Else tings\n";
             if (!lineContainsPragmaOnce(line)) {
                 m_fileContents.append(line + '\n');
             }
@@ -177,34 +176,46 @@ std::ofstream getOutputFile()
     return outFile;
 }
 
+std::vector<Header> getSortedHeaderList(const std::vector<fs::path>& headerPaths)
+{
+    std::cout << "Sorting headers by their dependancies...\n";
+    std::vector<Header> headerFiles;
+    std::unordered_map<std::string, unsigned> headerIDs;
+    for (auto& headerPath : headerPaths) {
+        auto& header = headerFiles.emplace_back(headerPath);
+        headerIDs.emplace(header.getFileName().string(), header.getID());
+    }
+
+    for (auto& header : headerFiles) {
+        header.createDependaciesList(headerIDs);
+    }
+
+    sortHeaders(headerFiles);
+    return headerFiles;
+}
+
+
+
 int main(int argc, char** argv)
 {
     std::ofstream outFile = getOutputFile();
     auto t = timeFunction([&]() {
+        //Get all the source and header files
         std::cout << "Searching for C++ files...\n";
         auto [sourcePaths, headerPaths] = findFiles();
         std::cout << "Number of C++ source files found: " << sourcePaths.size() << '\n';
         std::cout << "Number of C++ header files found: " << headerPaths.size() << '\n';
 
+        //Sort the header files 
         std::cout << "Sorting headers by their dependancies...\n";
-        std::vector<Header> headerFiles;
-        std::unordered_map<std::string, unsigned> headerIDs;
-        for (auto& headerPath : headerPaths) {
-            auto& header = headerFiles.emplace_back(headerPath);
-            headerIDs.emplace(header.getFileName().string(), header.getID());
-        }
+        std::vector<Header> headerFiles = getSortedHeaderList(headerPaths);
 
-        for (auto& header : headerFiles) {
-            header.createDependaciesList(headerIDs);
-        }
-
-        sortHeaders(headerFiles);
-        std::cout << "Outputting code...\n";
-
+        //Output the sorted header files to the final file
         for (auto& header : headerFiles) {
             outFile << header.getFileContent();
         }
 
+        //Output the source files to the final file
         for (auto& sourceFile : sourcePaths) {
             std::ifstream inFile(sourceFile);
             std::string line;
@@ -216,7 +227,7 @@ int main(int argc, char** argv)
         }
     });
 
-    std::cout << "Done. Time taken: " << t << "ms" << std::endl;
+    std::cout << "Done. Time taken: " << t / 1000.0 << "ms" << std::endl;
 }
 
 bool lineContainsInclude(const std::string & line)

@@ -61,22 +61,28 @@ std::vector<Header> getSortedHeaderList(const std::vector<fs::path>& headerPaths
     return headerFiles;
 }
 
+
+
 int main(int argc, char** argv)
 {
     std::ofstream outFile = getOutputFile();
     auto t = timeFunction([&]() {
+        //Get all the source and header files
         std::cout << "Searching for C++ files...\n";
         auto [sourcePaths, headerPaths] = findFiles();
         std::cout << "Number of C++ source files found: " << sourcePaths.size() << '\n';
         std::cout << "Number of C++ header files found: " << headerPaths.size() << '\n';
 
+        //Sort the header files 
         std::cout << "Sorting headers by their dependancies...\n";
         std::vector<Header> headerFiles = getSortedHeaderList(headerPaths);
 
+        //Output the sorted header files to the final file
         for (auto& header : headerFiles) {
             outFile << header.getFileContent();
         }
 
+        //Output the source files to the final file
         for (auto& sourceFile : sourcePaths) {
             std::ifstream inFile(sourceFile);
             std::string line;
@@ -88,5 +94,5 @@ int main(int argc, char** argv)
         }
     });
 
-    std::cout << "Done. Time taken: " << t << "ms" << std::endl;
+    std::cout << "Done. Time taken: " << t / 1000.0 << "ms" << std::endl;
 }

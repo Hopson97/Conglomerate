@@ -11,7 +11,7 @@ auto timeFunction(F f)
     f();
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = end - begin;
-    return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+    return std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
 }
 
 bool lineContainsInclude    (const std::string& line);
