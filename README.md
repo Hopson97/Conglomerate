@@ -21,3 +21,8 @@ Use CMake to generate your files for building.
 Add the executable to your path variables.
 
 Open a C++ project root in your favourite terminal and type `glom`. This will will run the program and create and output file in `glom_output/out.cpp`.
+
+
+### Command line options
+
+`-o <name>` Specify the name of the output file, eg `-o main.cpp` will create the output in main.cpp rather than the default out.cpp.
