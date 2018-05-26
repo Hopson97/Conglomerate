@@ -25,4 +25,6 @@ Open a C++ project root in your favourite terminal and type `glom`. This will wi
 
 ### Command line options
 
-`-o <name>` Specify the name of the output file, eg `-o main.cpp` will create the output in main.cpp rather than the default out.cpp.
+| Name        | Details                             | Example       |
+|-------------|-------------------------------------|---------------|
+| `-o <name>` | Specify the name of the output file | `-o main.cpp` |
