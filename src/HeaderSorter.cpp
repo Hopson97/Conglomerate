@@ -35,11 +35,11 @@ namespace
                     }
                 }
                 //Reset the sort
-                if (hasUnobservedDependacies) return false;
+                if (hasUnobservedDependacies) 
+                    return false;
             }
             index++;
         }
-
         return true;
     }
 }
@@ -50,31 +50,5 @@ void sortHeaders(std::vector<Header>& headers)
         [](const Header& a, const Header& b) {
             return a.getDependancies().size() < b.getDependancies().size();
     });
-
-    /*
-    std::vector<Header> sortedHeaders;
-    for (Header& header : headers) {
-        if (header.getDependancies().size() == 0) {
-            sortedHeaders.push_back(header);
-        }
-        else {
-            break;
-        }
-    }
-    for (Header& header : headers) {
-        for (int i = 0; i < sortedHeaders.size(); i++) {
-            const auto& deps = header.getDependancies();
-            if (deps.find(sortedHeaders[i].getID()) != deps.end()) {
-                sortedHeaders.insert(sortedHeaders.begin() + i, header);
-                break;
-            }
-        }
-    }
-
-    headers = sortedHeaders;
-    */
-
-
-
    while (!isSorted(headers));
 }

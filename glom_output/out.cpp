@@ -117,11 +117,11 @@ namespace
                     }
                 }
                 //Reset the sort
-                if (hasUnobservedDependacies) return false;
+                if (hasUnobservedDependacies) 
+                    return false;
             }
             index++;
         }
-
         return true;
     }
 }
@@ -132,32 +132,6 @@ void sortHeaders(std::vector<Header>& headers)
         [](const Header& a, const Header& b) {
             return a.getDependancies().size() < b.getDependancies().size();
     });
-
-    /*
-    std::vector<Header> sortedHeaders;
-    for (Header& header : headers) {
-        if (header.getDependancies().size() == 0) {
-            sortedHeaders.push_back(header);
-        }
-        else {
-            break;
-        }
-    }
-    for (Header& header : headers) {
-        for (int i = 0; i < sortedHeaders.size(); i++) {
-            const auto& deps = header.getDependancies();
-            if (deps.find(sortedHeaders[i].getID()) != deps.end()) {
-                sortedHeaders.insert(sortedHeaders.begin() + i, header);
-                break;
-            }
-        }
-    }
-
-    headers = sortedHeaders;
-    */
-
-
-
    while (!isSorted(headers));
 }
 #include <iostream>
@@ -169,11 +143,11 @@ void sortHeaders(std::vector<Header>& headers)
 /*
     Gets all the source and header files in the root directory, and any child directories using .c and .cpp wildcard
 */
-void findFiles(const fs::path& directory, 
-    std::vector<fs::path>& sourcePaths, 
-    std::vector<fs::path>& headerPaths)
+std::pair< std::vector<fs::path>, std::vector<fs::path>> findFiles()
 {
-    for (auto& entry : fs::recursive_directory_iterator(directory)) {
+    std::vector<fs::path> sourcePaths;
+    std::vector<fs::path> headerPaths;
+    for (auto& entry : fs::recursive_directory_iterator(fs::current_path())) {
         const auto& path = entry.path();
         if (path.extension() == ".cpp" || path.extension() == ".c") {
             sourcePaths.emplace_back(path);
@@ -182,19 +156,33 @@ void findFiles(const fs::path& directory,
             headerPaths.emplace_back(path);
         }
     }
+    return { sourcePaths, headerPaths };
+}
+
+std::ofstream getOutputFile()
+{
+    const auto folder = fs::current_path() / "glom_output";
+    const auto outputFile = folder / "out.cpp";
+
+    if (!fs::exists(folder))
+        fs::create_directory(folder);
+
+    if (fs::exists(outputFile)) {
+        fs::remove(outputFile);
+    }
+
+    std::ofstream outFile(outputFile);
+    return outFile;
 }
 
 int main(int argc, char** argv)
 {
-    std::string finalFile;
+    std::ofstream outFile = getOutputFile();
     auto t = timeFunction([&]() {
-        std::vector<fs::path> sourcePaths;
-        std::vector<fs::path> headerPaths;
-
         std::cout << "Searching for C++ files...\n";
-        findFiles(fs::current_path(), sourcePaths, headerPaths);
-        std::cout << "Number of C++ source files found: " << sourcePaths.size() << "\n";
-        std::cout << "Number of C++ header files found: " << headerPaths.size() << "\n";
+        auto [sourcePaths, headerPaths] = findFiles();
+        std::cout << "Number of C++ source files found: " << sourcePaths.size() << '\n';
+        std::cout << "Number of C++ header files found: " << headerPaths.size() << '\n';
 
         std::cout << "Sorting headers by their dependancies...\n";
         std::vector<Header> headerFiles;
@@ -209,9 +197,10 @@ int main(int argc, char** argv)
         }
 
         sortHeaders(headerFiles);
+        std::cout << "Outputting code...\n";
 
         for (auto& header : headerFiles) {
-            finalFile.append(header.getFileContent());
+            outFile << header.getFileContent();
         }
 
         for (auto& sourceFile : sourcePaths) {
@@ -219,23 +208,10 @@ int main(int argc, char** argv)
             std::string line;
             while (std::getline(inFile, line)) {
                 if (!lineContainsInclude(line)) {
-                    finalFile.append(line + '\n');
+                    outFile << line << '\n';
                 }
             }
         }
-
-        const auto folder       = fs::current_path() / "glom_output";
-        const auto outputFile   = folder / "out.cpp";
-   
-        if (!fs::exists(folder))
-            fs::create_directory(folder);
-
-        if (fs::exists(outputFile)) {
-            fs::remove(outputFile);
-        }
-
-        std::ofstream outFile(outputFile);
-        outFile << finalFile;
     });
 
     std::cout << "Done. Time taken: " << t << "ms" << std::endl;
