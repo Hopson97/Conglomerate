@@ -36,6 +36,7 @@ class Header
 void sortHeaders(std::vector<Header>& headerFiles);
 
 #include <chrono>
+#include <optional>
 
 template<typename F>
 auto timeFunction(F f)
@@ -49,7 +50,7 @@ auto timeFunction(F f)
 
 bool lineContainsInclude    (const std::string& line);
 bool lineContainsPragmaOnce (const std::string& line);
-std::string tryExtractHeaderNameFromInclude(const std::string& line);
+std::optional<std::string> tryExtractHeaderNameFromInclude(const std::string& line);
 
 #include <fstream>
 #include <iostream>
@@ -69,12 +70,13 @@ void Header::createDependaciesList(const std::unordered_map<std::string, unsigne
     std::ifstream inFile(m_fullPath);
     std::string line;
     while (std::getline(inFile, line)) {
-        auto s = tryExtractHeaderNameFromInclude(line);
-        if (s != "-1") {
-            auto name = fs::path(s).filename().string();
+        auto includeStr = tryExtractHeaderNameFromInclude(line);
+        if (includeStr) {
+            auto name = fs::path(*includeStr).filename().string();
             m_dependancies.emplace(idLookup.at(name));
         }
         else {
+            std::cout << "Else tings\n";
             if (!lineContainsPragmaOnce(line)) {
                 m_fileContents.append(line + '\n');
             }
@@ -231,7 +233,7 @@ bool lineContainsPragmaOnce(const std::string & line)
         line.find("#pragma once") != std::string::npos;
 }
 
-std::string tryExtractHeaderNameFromInclude(const std::string & line)
+std::optional<std::string> tryExtractHeaderNameFromInclude(const std::string & line)
 {
         auto loc = line.find("\"");
         if (loc != std::string::npos) {
@@ -244,5 +246,5 @@ std::string tryExtractHeaderNameFromInclude(const std::string & line)
             return name;
         }
     }
-    return "-1";
+    return {};
 }

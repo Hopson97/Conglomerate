@@ -19,9 +19,9 @@ void Header::createDependaciesList(const std::unordered_map<std::string, unsigne
     std::ifstream inFile(m_fullPath);
     std::string line;
     while (std::getline(inFile, line)) {
-        auto s = tryExtractHeaderNameFromInclude(line);
-        if (s != "-1") {
-            auto name = fs::path(s).filename().string();
+        auto includeStr = tryExtractHeaderNameFromInclude(line);
+        if (includeStr) {
+            auto name = fs::path(*includeStr).filename().string();
             m_dependancies.emplace(idLookup.at(name));
         }
         else {

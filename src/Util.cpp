@@ -15,7 +15,7 @@ bool lineContainsPragmaOnce(const std::string & line)
         line.find("#pragma once") != std::string::npos;
 }
 
-std::string tryExtractHeaderNameFromInclude(const std::string & line)
+std::optional<std::string> tryExtractHeaderNameFromInclude(const std::string & line)
 {
     if (line.find("#include") != std::string::npos) {
         auto loc = line.find("\"");
@@ -29,5 +29,5 @@ std::string tryExtractHeaderNameFromInclude(const std::string & line)
             return name;
         }
     }
-    return "-1";
+    return {};
 }

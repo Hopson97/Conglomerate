@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chrono>
+#include <optional>
 #include "Filesystem.h"
 
 template<typename F>
@@ -15,4 +16,4 @@ auto timeFunction(F f)
 
 bool lineContainsInclude    (const std::string& line);
 bool lineContainsPragmaOnce (const std::string& line);
-std::string tryExtractHeaderNameFromInclude(const std::string& line);
+std::optional<std::string> tryExtractHeaderNameFromInclude(const std::string& line);
