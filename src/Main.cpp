@@ -87,7 +87,6 @@ int main(int argc, char** argv)
         std::cout << "Number of C++ header files found: " << headerPaths.size() << '\n';
 
         //Sort the header files 
-        std::cout << "Sorting headers by their dependancies...\n";
         std::vector<Header> headerFiles = getSortedHeaderList(headerPaths);
 
         //Output the sorted header files to the final file

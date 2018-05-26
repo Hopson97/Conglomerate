@@ -46,9 +46,26 @@ namespace
 
 void sortHeaders(std::vector<Header>& headers)
 {
-    std::sort(headers.begin(), headers.end(),
-        [](const Header& a, const Header& b) {
-            return a.getDependancies().size() < b.getDependancies().size();
-    });
+    /*
+    std::vector<Header> sortedHeaders;
+
+    for (auto& header : headers) {
+        bool hasDependancy = false;
+        std::cout << "ITR\n";
+        for (int i = 0; i < sortedHeaders.size(); i++) {
+            auto& d = header.getDependancies();
+            if (d.find(sortedHeaders[i].getID()) != d.end()) {
+                sortedHeaders.insert(sortedHeaders.begin(), header);
+                hasDependancy = true;
+                break;
+            }
+        }
+        if (!hasDependancy) {
+            sortedHeaders.push_back(header);
+        }
+    }
+
+    headers = sortedHeaders;
+    */
    while (!isSorted(headers));
 }

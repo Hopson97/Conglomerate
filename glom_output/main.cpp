@@ -129,10 +129,33 @@ namespace
 
 void sortHeaders(std::vector<Header>& headers)
 {
-    std::sort(headers.begin(), headers.end(),
-        [](const Header& a, const Header& b) {
-            return a.getDependancies().size() < b.getDependancies().size();
-    });
+    /*
+    std::vector<Header> sortedHeaders;
+
+    for (auto& header : headers) {
+        bool hasDependancy = false;
+        std::cout << "ITR\n";
+        for (int i = 0; i < sortedHeaders.size(); i++) {
+            auto& d = header.getDependancies();
+            if (d.find(sortedHeaders[i].getID()) != d.end()) {
+                sortedHeaders.insert(sortedHeaders.begin(), header);
+                hasDependancy = true;
+                break;
+            }
+        }
+        if (!hasDependancy) {
+            sortedHeaders.push_back(header);
+        }
+    }
+
+    headers = sortedHeaders;
+    
+
+    return;*/
+ //   std::sort(headers.begin(), headers.end(),
+ //       [](const Header& a, const Header& b) {
+ //           return a.getDependancies().size() < b.getDependancies().size();
+  //  });
    while (!isSorted(headers));
 }
 #include <iostream>
@@ -162,20 +185,19 @@ std::pair< std::vector<fs::path>, std::vector<fs::path>> findFiles()
 
 std::ofstream getOutputFile(int argc, char** argv)
 {
-    std::cout << "Parsing command args...\n";
+    std::cout << "Parsing  command line arguments....\n";
     std::string outputFileName = "out.cpp";
     if (argc > 1) {
-        std::cout << "Args found...\n";
+        std::cout << "Arguments found...\n";
         for (int i = 1; i < argc; i++) {
             if (std::string(argv[i]) == "-o") {
                 if (argc >= i + 1) {
-                    std::cout << argv[i + 1] << "\n";
                     outputFileName = argv[i + 1];
                 }
             }
         }
     }
-    std::cout << "Finished parsing command args\n";
+    std::cout << "Finished parsing command line arguments.\n";
     const auto folder = fs::current_path() / "glom_output";
     const auto outputFile = folder / outputFileName;
 
@@ -221,7 +243,6 @@ int main(int argc, char** argv)
         std::cout << "Number of C++ header files found: " << headerPaths.size() << '\n';
 
         //Sort the header files 
-        std::cout << "Sorting headers by their dependancies...\n";
         std::vector<Header> headerFiles = getSortedHeaderList(headerPaths);
 
         //Output the sorted header files to the final file
