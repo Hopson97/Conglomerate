@@ -27,10 +27,23 @@ std::pair< std::vector<fs::path>, std::vector<fs::path>> findFiles()
     return { sourcePaths, headerPaths };
 }
 
-std::ofstream getOutputFile()
+std::ofstream getOutputFile(int argc, char** argv)
 {
+    std::cout << "Parsing  command line arguments....\n";
+    std::string outputFileName = "out.cpp";
+    if (argc > 1) {
+        std::cout << "Arguments found...\n";
+        for (int i = 1; i < argc; i++) {
+            if (std::string(argv[i]) == "-o") {
+                if (argc >= i + 1) {
+                    outputFileName = argv[i + 1];
+                }
+            }
+        }
+    }
+    std::cout << "Finished parsing command line arguments.\n";
     const auto folder = fs::current_path() / "glom_output";
-    const auto outputFile = folder / "out.cpp";
+    const auto outputFile = folder / outputFileName;
 
     if (!fs::exists(folder))
         fs::create_directory(folder);
@@ -65,7 +78,7 @@ std::vector<Header> getSortedHeaderList(const std::vector<fs::path>& headerPaths
 
 int main(int argc, char** argv)
 {
-    std::ofstream outFile = getOutputFile();
+    std::ofstream outFile = getOutputFile(argc, argv);
     auto t = timeFunction([&]() {
         //Get all the source and header files
         std::cout << "Searching for C++ files...\n";
